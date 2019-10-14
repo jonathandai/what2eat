@@ -13,6 +13,9 @@ const dashboardStyle = {
     width: "16px",
     height: "16px"
   },
+  cover: {
+    width: 151,
+  },
   stats: {
     color: grayColor[0],
     display: "inline-flex",
@@ -33,6 +36,40 @@ const dashboardStyle = {
       marginRight: "3px",
       marginLeft: "3px"
     }
+  },
+  card: {
+    display: 'flex',
+    flexDirection: 'row',
+    maxWidth: 800,
+    height: 240
+  },
+  inColumns: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  rightAlign: {
+    display: "flex",
+    flexDirection: "row",
+    justify: "flex-end",
+    alignItems: "flex-start"
+  },
+  content: {
+    flex: "1 0 auto"
+  },
+  cover: {
+    width: 200
+  },
+  centerAlign: {
+    alignItems: "center"
+  },
+  inRows: {
+    justify: "flex-end",
+    display: 'flex',
+    flexDirection: "row"
+  },
+  playIcon: {
+    height: 38,
+    width: 38
   },
   cardCategory: {
     color: grayColor[0],
