@@ -174,7 +174,7 @@ const Restaurant = ({ restaurant }) => {
           </div>
         </div>
         <div className={classes.rightAlign}>
-        <CardContent className={classes.rightAlign}>
+        <CardContent>
           <Typography variant="body1" color="textSecondary" justifyContent="flex-end">
             { restaurant.location }
           </Typography>

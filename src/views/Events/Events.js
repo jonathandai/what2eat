@@ -5,8 +5,10 @@ import TextField from '@material-ui/core/TextField';
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Button from "components/CustomButtons/Button.js";
+import { Link } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 
+import { Switch, Route, Redirect } from "react-router-dom";
 
 // @material-ui/icons
 import Restaurant from "@material-ui/icons/Restaurant";
@@ -51,6 +53,7 @@ export default function Events() {
         setPrice(newPriceRangeIndex.map(i=>PriceList[i]))
     }
 
+    
     return (
         <div>
         <GridContainer>
@@ -98,7 +101,8 @@ export default function Events() {
           />
           </GridItem>
           <GridItem xs={6} sm={6} md={6} className={classes.centerGrid}>
-            <Button className={classes.button} type="button" color="warning">Get Your Recommendations</Button>
+            
+            <Button component={Link} to='/admin/dashboard' className={classes.button} type="button" color="warning" >Get Your Recommendations</Button>
           </GridItem>
           </GridContainer>
         </div>

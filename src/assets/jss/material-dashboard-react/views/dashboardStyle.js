@@ -40,7 +40,7 @@ const dashboardStyle = {
   card: {
     display: 'flex',
     flexDirection: 'row',
-    maxWidth: 800,
+    maxWidth: 900,
     height: 240
   },
   inColumns: {
@@ -49,8 +49,8 @@ const dashboardStyle = {
   },
   rightAlign: {
     display: "flex",
+    paddingLeft: "150px",
     flexDirection: "row",
-    justify: "flex-end",
     alignItems: "flex-start"
   },
   content: {
