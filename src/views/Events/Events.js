@@ -5,8 +5,10 @@ import TextField from '@material-ui/core/TextField';
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Button from "components/CustomButtons/Button.js";
+import { Link } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 
+import { Switch, Route, Redirect } from "react-router-dom";
 
 // @material-ui/icons
 import Restaurant from "@material-ui/icons/Restaurant";
@@ -35,10 +37,10 @@ const useStyles = makeStyles(styles);
 export default function Events() {
     const classes = useStyles();
 
-    const intialCuisineSelection = [0, 3,6,8,10,12]
-    const initialPriceSelection = [1]
+    const initialCuisineSelection = []
+    const initialPriceSelection = []
     
-    const [cuisines, setCuisines]  = useState(intialCuisineSelection.map(i=>CuisineList[i]))
+    const [cuisines, setCuisines]  = useState(initialCuisineSelection.map(i=>CuisineList[i]))
     const [location, setLocation] = useState("");
     const [price, setPrice] = useState(initialPriceSelection.map(i=>PriceList[i]))
 
@@ -50,7 +52,7 @@ export default function Events() {
     const handlePriceRangeChange = (newPriceRangeIndex) => {
         setPrice(newPriceRangeIndex.map(i=>PriceList[i]))
     }
-
+    
     return (
         <div>
         <GridContainer>
@@ -64,7 +66,7 @@ export default function Events() {
                 tabIcon: Restaurant,
                 tabContent: (
                   <Tasks
-                    checkedIndexes={intialCuisineSelection}
+                    checkedIndexes={initialCuisineSelection}
                     tasksIndexes={[0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15]}
                     tasks={CuisineList}
                     onChange={handleCuisineChange}
@@ -98,7 +100,8 @@ export default function Events() {
           />
           </GridItem>
           <GridItem xs={6} sm={6} md={6} className={classes.centerGrid}>
-            <Button className={classes.button} type="button" color="warning">Get Your Recommendations</Button>
+            
+            <Button component={Link} to='/admin/dashboard' className={classes.button} type="button" color="warning" >Get Your Recommendations</Button>
           </GridItem>
           </GridContainer>
         </div>
