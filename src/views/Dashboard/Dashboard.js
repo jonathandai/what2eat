@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // react plugin for creating charts
 import ChartistGraph from "react-chartist";
 // @material-ui/core
@@ -21,8 +21,15 @@ import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider';
 import Tooltip from '@material-ui/core/Tooltip';
+import Modal from '@material-ui/core/Modal';
+import InfoIcon from '@material-ui/icons/Info';
+
 
 import Card from "components/Card/Card.js";
 import CardContent from "@material-ui/core/CardContent";
@@ -94,6 +101,19 @@ const useStylesTheme = makeStyles(theme => ({
   },
   leftMargin: {
     marginLeft: theme.spacing.unit,
+  },
+  gridList: {
+    width: 500,
+    height: 450,
+  },
+  modal: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
+  },
+  icon: {
+    color: 'rgba(255, 255, 255, 0.54)',
   }
 }));
 const StyledRating = withStyles({
@@ -105,15 +125,60 @@ const StyledRating = withStyles({
   },
 })(Rating);
 
+
+
 const handleExpandClick = (e) => (
   alert("success")
 );
 
-const Restaurant = ({ restaurant }) => {
-  const classes = useStyles();
+const RestaurantDetail = ({ restaurant, stateOpenDetail }) => {
   const classesTheme = useStylesTheme();
 
   return (
+    <Modal
+      open={stateOpenDetail.openDetail}
+      onClose={() => stateOpenDetail.setOpenDetail(false)}
+      className={classesTheme.modal}
+      aria-labelledby="modal-title"
+      aria-describedby="modal-description"
+    >
+       <GridList cellHeight={220} className={classesTheme.gridList}>
+        <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
+          <ListSubheader component="div">December</ListSubheader>
+        </GridListTile>
+        {restaurant.image.map(img => (
+          <GridListTile key={img}>
+            <img src={require(`assets/img/${img}.jpg`)} alt={img} />
+            <GridListTileBar
+              title={img}
+              subtitle={<span>by: {img}</span>}
+              actionIcon={
+                <IconButton aria-label={`info about ${img}`} className={classesTheme.icon}>
+                  <InfoIcon />
+                </IconButton>
+              }
+            />
+          </GridListTile>
+        ))}
+      </GridList>
+    </Modal>
+  );
+}
+
+const Restaurant = ({ restaurant }) => {
+  const classes = useStyles();
+  const classesTheme = useStylesTheme();
+  const [openDetail, setOpenDetail] = useState(false);
+
+  const handleOpen = () => {
+    setOpenDetail(true);
+  };
+
+
+  return (
+  <React.Fragment>
+   <RestaurantDetail restaurant={ restaurant } 
+    stateOpenDetail={ { openDetail, setOpenDetail } }/>
     <GridItem xs={12}>
       <Card className={classes.card}>
         <CardMedia
@@ -127,7 +192,7 @@ const Restaurant = ({ restaurant }) => {
             component="h5" 
             variant="h5" 
             style={{ cursor: 'pointer' }}
-            onClick={handleExpandClick}>
+            onClick={handleOpen}>
               { restaurant.name }
             </Typography>
             <div className={classes.inRows}>
@@ -183,6 +248,7 @@ const Restaurant = ({ restaurant }) => {
         </div>
       </Card>
     </GridItem>
+  </React.Fragment>
   );
 };
 
