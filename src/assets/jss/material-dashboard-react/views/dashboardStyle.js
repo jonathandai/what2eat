@@ -41,7 +41,7 @@ const dashboardStyle = {
     display: 'flex',
     flexDirection: 'row',
     maxWidth: 900,
-    height: 240
+    height: 220
   },
   inColumns: {
     display: "flex",
@@ -60,7 +60,8 @@ const dashboardStyle = {
     width: 200
   },
   centerAlign: {
-    alignItems: "center"
+    alignItems: "center",
+    paddingLeft: "30px",
   },
   inRows: {
     justify: "flex-end",

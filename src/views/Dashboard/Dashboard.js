@@ -29,7 +29,11 @@ import Divider from '@material-ui/core/Divider';
 import Tooltip from '@material-ui/core/Tooltip';
 import Modal from '@material-ui/core/Modal';
 import InfoIcon from '@material-ui/icons/Info';
-
+import Checkbox from '@material-ui/core/Checkbox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import Card from "components/Card/Card.js";
 import CardContent from "@material-ui/core/CardContent";
@@ -114,8 +118,12 @@ const useStylesTheme = makeStyles(theme => ({
   },
   icon: {
     color: 'rgba(255, 255, 255, 0.54)',
+  },
+  button: {
+    margin: theme.spacing(3),
   }
 }));
+
 const StyledRating = withStyles({
   iconFilled: {
     color: '#616161',
@@ -142,7 +150,7 @@ const RestaurantDetail = ({ restaurant, stateOpenDetail }) => {
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
     >
-       <GridList cellHeight={220} className={classesTheme.gridList}>
+       <GridList cellHeight={280} className={classesTheme.gridList}>
         <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
           <ListSubheader component="div">December</ListSubheader>
         </GridListTile>
@@ -151,7 +159,6 @@ const RestaurantDetail = ({ restaurant, stateOpenDetail }) => {
             <img src={require(`assets/img/${img}.jpg`)} alt={img} />
             <GridListTileBar
               title={img}
-              subtitle={<span>by: {img}</span>}
               actionIcon={
                 <IconButton aria-label={`info about ${img}`} className={classesTheme.icon}>
                   <InfoIcon />
@@ -165,15 +172,20 @@ const RestaurantDetail = ({ restaurant, stateOpenDetail }) => {
   );
 }
 
-const Restaurant = ({ restaurant }) => {
+
+
+const Restaurant = ({ restaurant, stateCheckState }) => {
   const classes = useStyles();
   const classesTheme = useStylesTheme();
   const [openDetail, setOpenDetail] = useState(false);
 
+  const handleChange = id => event => {
+    stateCheckState.checkSelection(restaurant.id)
+  };
+
   const handleOpen = () => {
     setOpenDetail(true);
   };
-
 
   return (
   <React.Fragment>
@@ -219,23 +231,32 @@ const Restaurant = ({ restaurant }) => {
             </div>
           </CardContent>
           <div className={classes.centerAlign}>
-            <Button
-              variant="contained"
-              color="primary"
-              size = "large"
-              className={classesTheme.spaceMargin}
-            >
-              <CheckIcon className={classesTheme.rightMargin}/>
-                Eat Here
-            </Button>
-            <Button
-              variant="contained"
-              color="default"
-              size = "large"
-              className={classesTheme.spaceMargin}
-            >
-              Not this time
-            </Button>
+            <FormGroup row>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    icon={<CheckBoxOutlineBlankIcon fontSize="large" />}
+                    checkedIcon={<CheckBoxIcon fontSize="large" />}
+                    checked={stateCheckState.checkState.includes(restaurant.id)}
+                    onChange={handleChange(restaurant.id)}
+                    value="eat here"
+                    
+                  />}
+                  label="EAT HERE !"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    icon={<CheckBoxOutlineBlankIcon fontSize="large" />}
+                    checkedIcon={<CheckBoxIcon fontSize="large" />}
+                    checked={!stateCheckState.checkState.includes(restaurant.id)}
+                    onChange={handleChange(restaurant.id)}
+                    value="NO"
+                    color="primary"
+                  />}
+                  label="Not This Time"
+              />
+            </FormGroup>
           </div>
         </div>
         <div className={classes.rightAlign}>
@@ -252,15 +273,58 @@ const Restaurant = ({ restaurant }) => {
   );
 };
 
+const useCheckSelection = () => {
+  const [checkState, setCheckList] = useState([]);
+  const checkSelection = (id) => {
+    if(checkState.includes(id))
+      setCheckList(checkState.filter(i => i !== id));
+    else
+      setCheckList([id].concat(checkState.filter(i => false)));
+    //setCheckList(checkState.includes(id) ? checkState.filter(i => i !== id) : [id].concat(checkState))
+  };
+  return [ checkState, checkSelection ];
+};
+
 export default function Dashboard() {  
+  const [checkState, checkSelection] = useCheckSelection([]);
+  const classes = useStyles();
+  const classesTheme = useStylesTheme();
   return (
    <GridContainer>
      { restaurants.map(restaurant =>
-        <Restaurant key={ restaurant.id } restaurant={ restaurant }
+        <Restaurant key={ restaurant.id } restaurant={ restaurant } stateCheckState = { { checkState, checkSelection } }
         />)
      }
-     
+      <Button 
+      variant="contained" 
+      className={classesTheme.button}
+      color= "secondary"
+      style={{maxWidth: '180px', maxHeight: '70px', minWidth: '180px', minHeight: '70px', fontSize: '20px'}}
+      onClick={ ()=>alert('success!') }
+      >
+        Submit
+      </Button>
    </GridContainer>
+  
 
   );
 }
+
+
+/* <Button
+              variant="contained"
+              color="primary"
+              size = "large"
+              className={classesTheme.spaceMargin}
+            >
+              <CheckIcon className={classesTheme.rightMargin}/>
+                Eat Here
+            </Button>
+            <Button
+              variant="contained"
+              color="default"
+              size = "large"
+              className={classesTheme.spaceMargin}
+            >
+              Not this time
+            </Button> */
