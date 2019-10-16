@@ -100,7 +100,6 @@ export default function Events() {
           />
           </GridItem>
           <GridItem xs={6} sm={6} md={6} className={classes.centerGrid}>
-            
             <Button component={Link} to='/admin/dashboard' className={classes.button} type="button" color="warning" >Get Your Recommendations</Button>
           </GridItem>
           </GridContainer>
