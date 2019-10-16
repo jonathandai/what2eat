@@ -99,7 +99,7 @@ export default function Dashboard() {
 	return (
     <div>
 		 <GridContainer>
-     <GridItem xs={6} sm={6} md={6}>
+     <GridItem xs={12} sm={12} md={12}>
         <CustomTabs
         title="Creating New Event"
         headerColor="primary"
@@ -142,14 +142,14 @@ export default function Dashboard() {
         ]}
       />
       </GridItem>
-      <GridItem xs={6} sm={6} md={6}>
+      <GridItem xs={12} sm={6} md={6}>
         <Button onClick={handleRecommendationClick} className={classes.button} type="button" >Get Your Recommendations</Button>
       </GridItem>
     { restaurants && restaurants.slice(0,4).map(restaurant =>
       <RestaurantCard key={ restaurant.id } restaurant={ restaurant } stateCheckState = { { checkState, checkSelection } }
       />)
     }
-       <Button 
+      {restaurants ? <Button 
          variant="contained" 
          className={classesTheme.button}
          color= "secondary"
@@ -157,7 +157,7 @@ export default function Dashboard() {
          onClick={ ()=>alert('success!') }
         >
           Submit
-        </Button>   
+        </Button>: null   } 
 		 </GridContainer>
      </div>
 	);
