@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Card from 'components/Card/Card.js';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -10,7 +10,22 @@ import styles from 'assets/jss/material-dashboard-react/views/dashboardStyle.js'
 import GridItem from 'components/Grid/GridItem.js';
 import Rating from '@material-ui/lab/Rating';
 import Button from '@material-ui/core/Button';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
 
+import Modal from '@material-ui/core/Modal';
+import InfoIcon from '@material-ui/icons/Info';
+import IconButton from '@material-ui/core/IconButton';
+
+import ListSubheader from '@material-ui/core/ListSubheader';
+import Divider from '@material-ui/core/Divider';
+import Tooltip from '@material-ui/core/Tooltip';
+import Checkbox from '@material-ui/core/Checkbox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
 
@@ -24,25 +39,84 @@ const useStylesTheme = makeStyles((theme) => ({
     },
     leftMargin: {
         marginLeft: theme.spacing.unit
-    }
+    },
+    gridList: {
+        width: 500,
+        height: 450,
+      },
+      modal: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+        overflow: 'hidden',
+      },
+      icon: {
+        color: 'rgba(255, 255, 255, 0.54)',
+      },
+      button: {
+        margin: theme.spacing(3),
+      }
 }));
-
-
-const handleExpandClick = (e) => alert('success');
 
 const StyledRating = withStyles({
     iconFilled: {
-        color: '#616161'
+      color: '#616161',
     },
     iconHover: {
-        color: '#ff3d47'
-    }
-})(Rating);
+      color: '#ff3d47',
+    },
+  })(Rating);
+
+const handleExpandClick = (e) => alert('success');
 
 
-const RestaurantCard = ({ restaurant }) => {
+const RestaurantDetail = ({ restaurant, stateOpenDetail }) => {
+    const classesTheme = useStylesTheme();
+  
+    return (
+      <Modal
+        open={stateOpenDetail.openDetail}
+        onClose={() => stateOpenDetail.setOpenDetail(false)}
+        className={classesTheme.modal}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+         <GridList cellHeight={220} className={classesTheme.gridList}>
+          <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
+            <ListSubheader component="div">December</ListSubheader>
+          </GridListTile>
+          {restaurant.image.map(img => (
+            <GridListTile key={img}>
+              <img src={require(`assets/img/${img}.jpg`)} alt={img} />
+              <GridListTileBar
+                title={img}
+                subtitle={<span>by: {img}</span>}
+                actionIcon={
+                  <IconButton aria-label={`info about ${img}`} className={classesTheme.icon}>
+                    <InfoIcon />
+                  </IconButton>
+                }
+              />
+            </GridListTile>
+          ))}
+        </GridList>
+      </Modal>
+    );
+}
+
+
+const RestaurantCard = ({ restaurant, stateCheckState }) => {
     const classes = useStyles();
     const classesTheme = useStylesTheme();
+    const [openDetail, setOpenDetail] = useState(false);
+
+    const handleChange = id => event => {
+      stateCheckState.checkSelection(restaurant.id)
+    };
+
+    const handleOpen = () => {
+      setOpenDetail(true);
+    };
 
     return (
         <GridItem xs={12}>
@@ -87,23 +161,32 @@ const RestaurantCard = ({ restaurant }) => {
                         </div>
                     </CardContent>
                     <div className={classes.centerAlign}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            size="large"
-                            className={classesTheme.spaceMargin}
-                        >
-                            <CheckIcon className={classesTheme.rightMargin} />
-                            Eat Here
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="default"
-                            size="large"
-                            className={classesTheme.spaceMargin}
-                        >
-                            Not this time
-                        </Button>
+                    <FormGroup row>
+                      <FormControlLabel
+                        control={
+                        <Checkbox
+                        icon={<CheckBoxOutlineBlankIcon fontSize="large" />}
+                        checkedIcon={<CheckBoxIcon fontSize="large" />}
+                        checked={stateCheckState.checkState.includes(restaurant.id)}
+                        onChange={handleChange(restaurant.id)}
+                        value="eat here"
+                    
+                        />}
+                        label="EAT HERE !"
+                      />
+                      <FormControlLabel
+                        control={
+                        <Checkbox
+                          icon={<CheckBoxOutlineBlankIcon fontSize="large" />}
+                          checkedIcon={<CheckBoxIcon fontSize="large" />}
+                          checked={!stateCheckState.checkState.includes(restaurant.id)}
+                          onChange={handleChange(restaurant.id)}
+                          value="NO"
+                          color="primary"
+                        />}
+                        label="Not This Time"
+                      />
+                    </FormGroup>
                     </div>
                 </div>
                 <div className={classes.rightAlign}>

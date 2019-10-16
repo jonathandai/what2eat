@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 // react plugin for creating charts
 // @material-ui/core
 import { makeStyles} from '@material-ui/core/styles';
@@ -6,9 +6,27 @@ import { makeStyles} from '@material-ui/core/styles';
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
 // core components
-import GridItem from 'components/Grid/GridItem.js';
-import GridContainer from 'components/Grid/GridContainer.js';
+import GridItem from "components/Grid/GridItem.js";
+import GridContainer from "components/Grid/GridContainer.js";
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import Divider from '@material-ui/core/Divider';
+import Tooltip from '@material-ui/core/Tooltip';
+import Modal from '@material-ui/core/Modal';
+import InfoIcon from '@material-ui/icons/Info';
+import Checkbox from '@material-ui/core/Checkbox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import IconButton from '@material-ui/core/IconButton';
 
+
+import Card from "components/Card/Card.js";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from '@material-ui/core/CardMedia';
 import styles from 'assets/jss/material-dashboard-react/views/dashboardStyle.js';
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
 import Tasks from "components/Tasks/Tasks.js";
@@ -46,6 +64,12 @@ const PriceList = [
   "$","$$","$$$","$$$$"
 ]
 
+const useStylesTheme = makeStyles((theme) => ({
+  button: {
+    margin: theme.spacing(3),
+  }
+}));
+
 export default function Dashboard() {
     const [ restaurants, setRestaurants ] = useState(defaultRest);
     
@@ -62,7 +86,6 @@ export default function Dashboard() {
     }
   const useStyles = makeStyles(styles);
   const classes = useStyles();
-  
 
   const handleRecommendationClick = () => {
     const cuisines = cuisineSelection.map(i=>CuisineList[i]);
@@ -92,6 +115,22 @@ export default function Dashboard() {
       console.log('Error',err);
     });
   }
+
+  const useCheckSelection = () => {
+    const [checkState, setCheckList] = useState([]);
+    const checkSelection = (id) => {
+      if(checkState.includes(id))
+        setCheckList(checkState.filter(i => i !== id));
+      else
+        setCheckList([id].concat(checkState.filter(i => false)));
+     //setCheckList(checkState.includes(id) ? checkState.filter(i => i !== id) : [id].concat(checkState))
+    };
+    return [ checkState, checkSelection ];
+  };
+
+  const [checkState, checkSelection] = useCheckSelection([]);
+  const classesTheme = useStylesTheme();
+
 	return (
     <div>
 		 <GridContainer>
@@ -142,10 +181,53 @@ export default function Dashboard() {
         <Button onClick={handleRecommendationClick} className={classes.button} type="button" >Get Your Recommendations</Button>
       </GridItem>
     { restaurants.slice(0,4).map(restaurant =>
-      <RestaurantCard key={ restaurant.id } restaurant={ restaurant }
+      <RestaurantCard key={ restaurant.id } restaurant={ restaurant } stateCheckState = { { checkState, checkSelection } }
       />)
+    }
+       <Button 
+         variant="contained" 
+         className={classesTheme.button}
+         color= "secondary"
+         style={{maxWidth: '180px', maxHeight: '70px', minWidth: '180px', minHeight: '70px', fontSize: '20px'}}
+         onClick={ ()=>alert('success!') }
+        >
+          Submit
+        </Button>
     }   
 		 </GridContainer>
      </div>
 	);
 }
+
+
+/* <Button
+              variant="contained"
+              color="primary"
+              size = "large"
+              className={classesTheme.spaceMargin}
+            >
+              <CheckIcon className={classesTheme.rightMargin}/>
+                Eat Here
+            </Button>
+            <Button
+              variant="contained"
+              color="default"
+              size = "large"
+              className={classesTheme.spaceMargin}
+            >
+              Not this time
+            </Button> */
+           /*  export default function Dashboard() {  
+              const [checkState, checkSelection] = useCheckSelection([]);
+              const classes = useStyles();
+              const classesTheme = useStylesTheme();
+              return (
+               <GridContainer>
+                 { restaurants.map(restaurant =>
+                    <Restaurant key={ restaurant.id } restaurant={ restaurant } stateCheckState = { { checkState, checkSelection } }
+                    />)
+                 }
+                 
+               </GridContainer>
+              );
+            }; */
