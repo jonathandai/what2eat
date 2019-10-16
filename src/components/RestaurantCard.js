@@ -146,14 +146,16 @@ const RestaurantCard = ({ restaurant, stateCheckState }) => {
                             </div>
                         </div>
                         <div className={classes.inRows}>
-                            <StyledRating
-                                value={restaurant.price}
+                           {/*  <StyledRating
+                                value={restaurant.price.length}
                                 icon={<AttachMoneyIcon />}
-                                max={restaurant.price}
+                                max={restaurant.price.length}
                                 size="small"
                                 readOnly
-                            />
-
+                            /> */}
+                            <Typography variant="subtitle1" color="textSecondary">
+                                    {restaurant.price}
+                                </Typography>
                             <div className={classesTheme.leftMargin}>
                                 <Typography variant="subtitle1" color="textSecondary">
                                     {restaurant.categories.map((food) => <li>{food.title}</li>)}

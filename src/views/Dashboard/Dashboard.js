@@ -157,8 +157,7 @@ export default function Dashboard() {
          onClick={ ()=>alert('success!') }
         >
           Submit
-        </Button>
-    }   
+        </Button>   
 		 </GridContainer>
      </div>
 	);
