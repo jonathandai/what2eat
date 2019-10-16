@@ -187,7 +187,7 @@ const Restaurant = ({ restaurant, stateCheckState }) => {
   };
 
   return (
-    <GridItem xs={12}>
+    <GridItem xs={12} >
       <Card className={classes.card}>
         <CardMedia
           className={classes.cover}
