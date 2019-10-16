@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Card from 'components/Card/Card.js';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -13,12 +13,19 @@ import Button from '@material-ui/core/Button';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import Divider from '@material-ui/core/Divider';
-import Tooltip from '@material-ui/core/Tooltip';
+
 import Modal from '@material-ui/core/Modal';
 import InfoIcon from '@material-ui/icons/Info';
 import IconButton from '@material-ui/core/IconButton';
+
+import ListSubheader from '@material-ui/core/ListSubheader';
+import Divider from '@material-ui/core/Divider';
+import Tooltip from '@material-ui/core/Tooltip';
+import Checkbox from '@material-ui/core/Checkbox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
 
@@ -45,6 +52,9 @@ const useStylesTheme = makeStyles((theme) => ({
       },
       icon: {
         color: 'rgba(255, 255, 255, 0.54)',
+      },
+      button: {
+        margin: theme.spacing(3),
       }
 }));
 
@@ -94,9 +104,19 @@ const RestaurantDetail = ({ restaurant, stateOpenDetail }) => {
     );
 }
 
-const RestaurantCard = ({ restaurant }) => {
+
+const RestaurantCard = ({ restaurant, stateCheckState }) => {
     const classes = useStyles();
     const classesTheme = useStylesTheme();
+    const [openDetail, setOpenDetail] = useState(false);
+
+    const handleChange = id => event => {
+      stateCheckState.checkSelection(restaurant.id)
+    };
+
+    const handleOpen = () => {
+      setOpenDetail(true);
+    };
 
     return (
         <GridItem xs={12}>
@@ -125,14 +145,16 @@ const RestaurantCard = ({ restaurant }) => {
                             </div>
                         </div>
                         <div className={classes.inRows}>
-                            <StyledRating
-                                value={restaurant.price}
+                           {/*  <StyledRating
+                                value={restaurant.price.length}
                                 icon={<AttachMoneyIcon />}
-                                max={restaurant.price}
+                                max={restaurant.price.length}
                                 size="small"
                                 readOnly
-                            />
-
+                            /> */}
+                            <Typography variant="subtitle1" color="textSecondary">
+                                    {restaurant.price}
+                                </Typography>
                             <div className={classesTheme.leftMargin}>
                                 <Typography variant="subtitle1" color="textSecondary">
                                     {restaurant.categories.map((food) => <li>{food.title}</li>)}
@@ -141,23 +163,32 @@ const RestaurantCard = ({ restaurant }) => {
                         </div>
                     </CardContent>
                     <div className={classes.centerAlign}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            size="large"
-                            className={classesTheme.spaceMargin}
-                        >
-                            <CheckIcon className={classesTheme.rightMargin} />
-                            Eat Here
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="default"
-                            size="large"
-                            className={classesTheme.spaceMargin}
-                        >
-                            Not this time
-                        </Button>
+                    <FormGroup row>
+                      <FormControlLabel
+                        control={
+                        <Checkbox
+                        icon={<CheckBoxOutlineBlankIcon fontSize="large" />}
+                        checkedIcon={<CheckBoxIcon fontSize="large" />}
+                        checked={stateCheckState.checkState.includes(restaurant.id)}
+                        onChange={handleChange(restaurant.id)}
+                        value="eat here"
+                    
+                        />}
+                        label="EAT HERE !"
+                      />
+                      <FormControlLabel
+                        control={
+                        <Checkbox
+                          icon={<CheckBoxOutlineBlankIcon fontSize="large" />}
+                          checkedIcon={<CheckBoxIcon fontSize="large" />}
+                          checked={!stateCheckState.checkState.includes(restaurant.id)}
+                          onChange={handleChange(restaurant.id)}
+                          value="NO"
+                          color="primary"
+                        />}
+                        label="Not This Time"
+                      />
+                    </FormGroup>
                     </div>
                 </div>
                 <div className={classes.rightAlign}>
