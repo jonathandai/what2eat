@@ -36,7 +36,8 @@ import RestaurantCard from '../../components/RestaurantCard.js'
 import RestaurantIcon from "@material-ui/icons/Restaurant";
 import LocationIcon from "@material-ui/icons/MyLocation";
 
-
+const apiKey =
+		'bWKtDZgaFdt5Zq-srgXTP_nLbhQuHA4kNw0Y8tH0GOIB8bCJsK2KgAW0epvwAhu6YJUD9CN-VG-96IOUhD9sHm_t69ZpPR_HoLnEeXgAdv_IZ-mtX67a4ftZK8GkXXYx';
 
 const defaultRest = [
   {
@@ -60,7 +61,7 @@ const CuisineList = [
   "Sandwiches", "Breakfast", "Vietnamese", "Vegetarian", "Sushi Bars", "American",
 ]
 const PriceList = [
-  "$","$$","$$$","$$$$","$$$$$"
+  "$","$$","$$$","$$$$"
 ]
 
 const useStylesTheme = makeStyles((theme) => ({
@@ -70,60 +71,30 @@ const useStylesTheme = makeStyles((theme) => ({
 }));
 
 export default function Dashboard() {
-  const [ restaurants, setRestaurants ] = useState(defaultRest);
-  const [ refresh, setRefresh ] = useState(false);
-  const initialCuisineSelection = []
-    const initialPriceSelection = []
+    const [ restaurants, setRestaurants ] = useState(defaultRest);
     
-    const [cuisines, setCuisines]  = useState(initialCuisineSelection.map(i=>CuisineList[i]))
+    const [cuisineSelection, setCuisineSelection] = useState([]);
     const [location, setLocation] = useState("");
-    const [prices, setPrices] = useState(initialPriceSelection.map(i=>PriceList[i]))
+    const [priceSelection, setPriceSelection] = useState([]);
 
     const handleCuisineChange = (newCuisinesIndex) => {
-        setCuisines(newCuisinesIndex.map(i=>CuisineList[i]));
+      setCuisineSelection(newCuisinesIndex);
     }
 
     const handlePriceRangeChange = (newPriceRangeIndex) => {
-        setPrices(newPriceRangeIndex.map(i=>PriceList[i]))
+      setPriceSelection(newPriceRangeIndex)
     }
   const useStyles = makeStyles(styles);
   const classes = useStyles();
 
-	/* const config = {
-		headers: { Authorization: 'Bearer API key' },
-		params: {
-			term: 'tacos',
-			location: 'main 123st'
-		}
-  }; */  
-
-  const rec = [
-    {
-      id: "",
-      alias: "",
-      prices:"",
-      location: "",
-      image_url:"",
-      rating: 0, 
-      categories: [
-        {
-          alias: "",
-          title: ""
-        }
-      ]
-    }
-  ]
-  
-  const apiKey =
-		'bWKtDZgaFdt5Zq-srgXTP_nLbhQuHA4kNw0Y8tH0GOIB8bCJsK2KgAW0epvwAhu6YJUD9CN-VG-96IOUhD9sHm_t69ZpPR_HoLnEeXgAdv_IZ-mtX67a4ftZK8GkXXYx';
-
   const handleRecommendationClick = () => {
+    const cuisines = cuisineSelection.map(i=>CuisineList[i]);
     const categories = cuisines.map(cuisine=>cuisine.toLowerCase()).join();
     console.log('categories', categories)
+    
+    const prices = priceSelection.map(i=>PriceList[i]);
     const dollarsigns = prices.map(str=>str.length).join();
     console.log('dollarsigns', dollarsigns)
-
-
     axios.get(
       `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/search?location=${location.toLowerCase()}`,
       {
@@ -173,8 +144,8 @@ export default function Dashboard() {
             tabIcon: RestaurantIcon,
             tabContent: (
               <Tasks
-                checkedIndexes={initialCuisineSelection}
-                tasksIndexes={[0, 1, 2, 3,4]}
+                checkedIndexes={cuisineSelection}
+                tasksIndexes={[0, 1, 2, 3,4,5,6]}
                 tasks={CuisineList}
                 onChange={handleCuisineChange}
               />
@@ -196,8 +167,8 @@ export default function Dashboard() {
             tabIcon: DollarSign,
             tabContent: (
               <Tasks
-                checkedIndexes={initialPriceSelection}
-                tasksIndexes={[0,1,2,3,4]}
+                checkedIndexes={priceSelection}
+                tasksIndexes={[0,1,2,3]}
                 tasks={PriceList}
                 onChange={handlePriceRangeChange}
               />
@@ -207,7 +178,7 @@ export default function Dashboard() {
       />
       </GridItem>
       <GridItem xs={6} sm={6} md={6}>
-        <Button onClick={handleRecommendationClick} className={classes.button} type="button" color="warning" >Get Your Recommendations</Button>
+        <Button onClick={handleRecommendationClick} className={classes.button} type="button" >Get Your Recommendations</Button>
       </GridItem>
     { restaurants.slice(0,4).map(restaurant =>
       <RestaurantCard key={ restaurant.id } restaurant={ restaurant } stateCheckState = { { checkState, checkSelection } }
@@ -222,6 +193,7 @@ export default function Dashboard() {
         >
           Submit
         </Button>
+    }   
 		 </GridContainer>
      </div>
 	);
