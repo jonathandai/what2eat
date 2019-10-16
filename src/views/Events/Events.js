@@ -8,7 +8,6 @@ import Button from "components/CustomButtons/Button.js";
 import { Link } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 
-import { Switch, Route, Redirect } from "react-router-dom";
 
 // @material-ui/icons
 import Restaurant from "@material-ui/icons/Restaurant";

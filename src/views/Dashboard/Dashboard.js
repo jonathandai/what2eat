@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 // react plugin for creating charts
 // @material-ui/core
 import { makeStyles} from '@material-ui/core/styles';
@@ -8,25 +8,7 @@ import Button from '@material-ui/core/Button';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import Divider from '@material-ui/core/Divider';
-import Tooltip from '@material-ui/core/Tooltip';
-import Modal from '@material-ui/core/Modal';
-import InfoIcon from '@material-ui/icons/Info';
-import Checkbox from '@material-ui/core/Checkbox';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import IconButton from '@material-ui/core/IconButton';
 
-
-import Card from "components/Card/Card.js";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from '@material-ui/core/CardMedia';
 import styles from 'assets/jss/material-dashboard-react/views/dashboardStyle.js';
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
 import Tasks from "components/Tasks/Tasks.js";
@@ -38,23 +20,6 @@ import LocationIcon from "@material-ui/icons/MyLocation";
 
 const apiKey =
 		'bWKtDZgaFdt5Zq-srgXTP_nLbhQuHA4kNw0Y8tH0GOIB8bCJsK2KgAW0epvwAhu6YJUD9CN-VG-96IOUhD9sHm_t69ZpPR_HoLnEeXgAdv_IZ-mtX67a4ftZK8GkXXYx';
-
-const defaultRest = [
-  {
-    id: "",
-    alias: "",
-    prices:"",
-    location: "",
-    image_url:"",
-    rating: 0, 
-    categories: [
-      {
-        alias: "",
-        title: ""
-      }
-    ]
-  }
-]
 
 const CuisineList = [
   "Pizza","Chinese","Mexican","Burgers", "Thai", "Seafood", "Italian", "Steakhouse", "Korean", "Japanese",
@@ -71,7 +36,7 @@ const useStylesTheme = makeStyles((theme) => ({
 }));
 
 export default function Dashboard() {
-    const [ restaurants, setRestaurants ] = useState(defaultRest);
+    const [ restaurants, setRestaurants ] = useState();
     
     const [cuisineSelection, setCuisineSelection] = useState([]);
     const [location, setLocation] = useState("");
@@ -180,7 +145,7 @@ export default function Dashboard() {
       <GridItem xs={6} sm={6} md={6}>
         <Button onClick={handleRecommendationClick} className={classes.button} type="button" >Get Your Recommendations</Button>
       </GridItem>
-    { restaurants.slice(0,4).map(restaurant =>
+    { restaurants && restaurants.slice(0,4).map(restaurant =>
       <RestaurantCard key={ restaurant.id } restaurant={ restaurant } stateCheckState = { { checkState, checkSelection } }
       />)
     }

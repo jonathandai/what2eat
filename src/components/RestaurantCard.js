@@ -3,13 +3,11 @@ import Card from 'components/Card/Card.js';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
-import CheckIcon from '@material-ui/icons/Check';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import styles from 'assets/jss/material-dashboard-react/views/dashboardStyle.js';
 import GridItem from 'components/Grid/GridItem.js';
 import Rating from '@material-ui/lab/Rating';
-import Button from '@material-ui/core/Button';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -19,8 +17,6 @@ import InfoIcon from '@material-ui/icons/Info';
 import IconButton from '@material-ui/core/IconButton';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
-import Divider from '@material-ui/core/Divider';
-import Tooltip from '@material-ui/core/Tooltip';
 import Checkbox from '@material-ui/core/Checkbox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
@@ -106,9 +102,14 @@ const RestaurantDetail = ({ restaurant, stateOpenDetail }) => {
 
 
 const RestaurantCard = ({ restaurant, stateCheckState }) => {
+    
     const classes = useStyles();
     const classesTheme = useStylesTheme();
     const [openDetail, setOpenDetail] = useState(false);
+
+    if (restaurant == null) {
+        return null;
+    }
 
     const handleChange = id => event => {
       stateCheckState.checkSelection(restaurant.id)
