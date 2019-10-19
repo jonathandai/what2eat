@@ -23,6 +23,8 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
+import {apiKey} from '../views/Dashboard/Dashboard'
+import axios from 'axios';
 
 
 const useStyles = makeStyles(styles);
@@ -63,10 +65,13 @@ const StyledRating = withStyles({
     },
   })(Rating);
 
-const handleExpandClick = (e) => alert('success');
+/* const handleExpandClick = e => (restaurant, setOpenDetail) => {
+  setOpenDetail(true);
+  
+}; */
 
 
-const RestaurantDetail = ({ restaurant, stateOpenDetail }) => {
+const RestaurantDetail = ({ restaurantDetails, stateOpenDetail }) => {
     const classesTheme = useStylesTheme();
   
     return (
@@ -81,12 +86,12 @@ const RestaurantDetail = ({ restaurant, stateOpenDetail }) => {
           <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
             <ListSubheader component="div">December</ListSubheader>
           </GridListTile>
-          {restaurant.image.map(img => (
+          {restaurantDetails.photos.map(img => (
             <GridListTile key={img}>
-              <img src={require(`assets/img/${img}.jpg`)} alt={img} />
+              <img src={img} alt={'img'} />
               <GridListTileBar
-                title={img}
-                subtitle={<span>by: {img}</span>}
+                title={restaurantDetails.name}
+                subtitle={<span>by: {restaurantDetails.name}</span>}
                 actionIcon={
                   <IconButton aria-label={`info about ${img}`} className={classesTheme.icon}>
                     <InfoIcon />
@@ -106,6 +111,7 @@ const RestaurantCard = ({ restaurant, stateCheckState }) => {
     const classes = useStyles();
     const classesTheme = useStylesTheme();
     const [openDetail, setOpenDetail] = useState(false);
+    const [restaurantDetails, setRestaurantDtails] = useState();
 
     if (restaurant == null) {
         return null;
@@ -116,11 +122,27 @@ const RestaurantCard = ({ restaurant, stateCheckState }) => {
     };
 
     const handleOpen = () => {
+      axios.get(
+        `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/${restaurant.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${apiKey}`
+          }
+        }
+      )
+      .then((res) => {
+        console.log("response",res.data);
+        setRestaurantDtails(res.data);
+      })
+      .catch((err) => {
+        console.log('Error',err);
+      });
       setOpenDetail(true);
     };
 
     return (
-        <GridItem xs={12}>
+        <GridItem xs={12} sm={6} md={6}>
+        {restaurantDetails && <RestaurantDetail restaurantDetails ={ restaurantDetails } stateOpenDetail = { { openDetail, setOpenDetail } } />}
         <Card className={classes.card}>
                 <CardMedia
                     className={classes.cover}
@@ -133,7 +155,7 @@ const RestaurantCard = ({ restaurant, stateCheckState }) => {
                             component="h5"
                             variant="h5"
                             style={{ cursor: 'pointer' }}
-                            onClick={handleExpandClick}
+                            onClick={handleOpen}
                         >
                             {restaurant.name}
                         </Typography>
@@ -205,3 +227,6 @@ const RestaurantCard = ({ restaurant, stateCheckState }) => {
 };
 
 export default RestaurantCard
+
+/*         <RestaurantDetail restaurant={ restaurant } stateOpenDetail = { { openDetail, setOpenDetail } } />
+ */
