@@ -15,6 +15,13 @@ const dashboardStyle = {
   },
   cover: {
     width: 151,
+    height: 150
+  },
+  img: {
+    margin: 'auto',
+    display: 'block',
+    maxWidth: '100%',
+    maxHeight: '100%',
   },
   stats: {
     color: grayColor[0],
@@ -41,7 +48,7 @@ const dashboardStyle = {
     display: 'flex',
     flexDirection: 'row',
     maxWidth: 900,
-    height: 220
+    minHeight: 220
   },
   inColumns: {
     display: "flex",
@@ -67,6 +74,9 @@ const dashboardStyle = {
     justify: "flex-end",
     display: 'flex',
     flexDirection: "row"
+  },
+  root: {
+    flexGrow: 1
   },
   playIcon: {
     height: 38,

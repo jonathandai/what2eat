@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Card from 'components/Card/Card.js';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -15,6 +16,9 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Modal from '@material-ui/core/Modal';
 import InfoIcon from '@material-ui/icons/Info';
 import IconButton from '@material-ui/core/IconButton';
+import GridContainer from './Grid/GridContainer';
+import ButtonBase from '@material-ui/core/ButtonBase';
+import Grid from "@material-ui/core/Grid";
 
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -25,6 +29,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import {apiKey} from '../views/Dashboard/Dashboard'
 import axios from 'axios';
+
+
 
 
 const useStyles = makeStyles(styles);
@@ -39,8 +45,9 @@ const useStylesTheme = makeStyles((theme) => ({
         marginLeft: theme.spacing.unit
     },
     gridList: {
-        width: 500,
-        height: 450,
+        width: 700,
+        height: 500,
+        transform: 'translateZ(0)'
       },
       modal: {
         display: 'flex',
@@ -53,7 +60,15 @@ const useStylesTheme = makeStyles((theme) => ({
       },
       button: {
         margin: theme.spacing(3),
-      }
+      },
+      root: {
+        padding: theme.spacing(3, 2),
+      },
+      paper: {
+        padding: theme.spacing(2),
+        margin: "auto",
+        maxWidth: 900
+      },
 }));
 
 const StyledRating = withStyles({
@@ -71,7 +86,7 @@ const StyledRating = withStyles({
 }; */
 
 
-const RestaurantDetail = ({ restaurantDetails, stateOpenDetail }) => {
+const RestaurantDetail = ({ restaurantDetails, restaurantReviews, stateOpenDetail }) => {
     const classesTheme = useStylesTheme();
   
     return (
@@ -82,11 +97,11 @@ const RestaurantDetail = ({ restaurantDetails, stateOpenDetail }) => {
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
       >
-         <GridList cellHeight={220} className={classesTheme.gridList}>
-          <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
-            <ListSubheader component="div">December</ListSubheader>
+         <GridList className={classesTheme.gridList}>
+          <GridListTile key="Header" cols={2} style={{ height: 'auto' }}>
+            <ListSubheader component="div">{restaurantDetails.name}</ListSubheader>
           </GridListTile>
-          {restaurantDetails.photos.map(img => (
+          {restaurantDetails.photos && restaurantDetails.photos.map(img => (
             <GridListTile key={img}>
               <img src={img} alt={'img'} />
               <GridListTileBar
@@ -98,6 +113,18 @@ const RestaurantDetail = ({ restaurantDetails, stateOpenDetail }) => {
                   </IconButton>
                 }
               />
+            </GridListTile>
+          ))}
+          {restaurantReviews && restaurantReviews.map(r => (
+            <GridListTile key={r.user.name}>
+            <Paper className={classesTheme.root}>
+              <Typography variant="h5" component="h3">
+                { r.user.name }
+              </Typography>
+              <Typography component="p">
+                { r.text }
+              </Typography>
+            </Paper>
             </GridListTile>
           ))}
         </GridList>
@@ -112,6 +139,7 @@ const RestaurantCard = ({ restaurant, stateCheckState }) => {
     const classesTheme = useStylesTheme();
     const [openDetail, setOpenDetail] = useState(false);
     const [restaurantDetails, setRestaurantDtails] = useState();
+    const [restaurantReviews, setRestaurantReviews] = useState();
 
     if (restaurant == null) {
         return null;
@@ -137,17 +165,120 @@ const RestaurantCard = ({ restaurant, stateCheckState }) => {
       .catch((err) => {
         console.log('Error',err);
       });
+      axios.get(
+        `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/${restaurant.id}/reviews`,
+        {
+          headers: {
+            Authorization: `Bearer ${apiKey}`
+          }
+        }
+      )
+      .then((res) => {
+        console.log("response",res.data.reviews);
+        setRestaurantReviews(res.data.reviews);
+      })
+      .catch((err) => {
+        console.log('Error',err);
+      });
       setOpenDetail(true);
     };
 
     return (
-        <GridItem xs={12} sm={6} md={6}>
-        {restaurantDetails && <RestaurantDetail restaurantDetails ={ restaurantDetails } stateOpenDetail = { { openDetail, setOpenDetail } } />}
+      <Grid item xs={12} sm={12} md={12}>
+       {restaurantDetails && <RestaurantDetail restaurantDetails ={ restaurantDetails } restaurantReviews={ restaurantReviews } stateOpenDetail = { { openDetail, setOpenDetail } } />}
+       
+        <div className={classes.root}>
+          <Paper className={classesTheme.paper}>
+            <Grid container spacing={1}>
+              <Grid item>
+                <ButtonBase className={classes.image}>
+                  <img
+                    width="280" height="280"
+                    alt="complex"
+                    src={ restaurant.image_url }
+                  />
+                </ButtonBase>
+              </Grid>
+              <Grid item xs={12} sm container>
+                <Grid item xs container direction="column" spacing={2}>
+                  <Grid item xs>
+                    <Typography gutterBottom 
+                    variant="h5"
+                    style={{ cursor: 'pointer' }}
+                    onClick={handleOpen}
+                    >
+                      { restaurant.name }
+                    </Typography>
+                    <div className={classes.inRows}>
+                      <Rating name="half-rating" value={restaurant.rating} precision={0.5} readOnly />
+                      <Typography variant="body1" gutterBottom>
+                      {restaurant.review_count} reviews
+                      </Typography>
+                    </div>
+                    <div className={classes.inRows}>
+                      <StyledRating
+                        value={restaurant.price.length}
+                        icon={<AttachMoneyIcon />}
+                        max={restaurant.price.length}
+                        size="small"
+                        readOnly
+                      /> 
+                      <Typography variant="subtitle1" color="textSecondary">
+                         {restaurant.categories.map((food) => <li>{food.title}</li>)}
+                      </Typography>
+                    </div>
+                  </Grid>
+                  <Grid item>
+                    <FormControlLabel
+                        control={
+                        <Checkbox
+                        icon={<CheckBoxOutlineBlankIcon fontSize="large" />}
+                        checkedIcon={<CheckBoxIcon fontSize="large" />}
+                        checked={stateCheckState.checkState.includes(restaurant.id)}
+                        onChange={handleChange(restaurant.id)}
+                        value="eat here"
+                    
+                        />}
+                        label="EAT HERE !"
+                    />
+                    <FormControlLabel
+                        control={
+                        <Checkbox
+                          icon={<CheckBoxOutlineBlankIcon fontSize="large" />}
+                          checkedIcon={<CheckBoxIcon fontSize="large" />}
+                          checked={!stateCheckState.checkState.includes(restaurant.id)}
+                          onChange={handleChange(restaurant.id)}
+                          value="NO"
+                          color="primary"
+                        />}
+                        label="Not This Time"
+                    />
+                  </Grid>
+                </Grid>
+                <Grid item>
+                  <Typography variant="subtitle1">{restaurant.location.address1}</Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Paper>
+        </div>
+      </Grid>
+  );
+};
+
+export default RestaurantCard
+
+/*         <RestaurantDetail restaurant={ restaurant } stateOpenDetail = { { openDetail, setOpenDetail } } />
+ */
+
+
+ /* <GridItem xs={12} sm={12} md={12}>
+        {restaurantDetails && <RestaurantDetail restaurantDetails ={ restaurantDetails } restaurantReviews={ restaurantReviews } stateOpenDetail = { { openDetail, setOpenDetail } } />}
         <Card className={classes.card}>
                 <CardMedia
                     className={classes.cover}
                     image={restaurant.image_url}
-                    title="Mid Kitchen Photo"
+                    title="Photo"
                 />
                 <div className={classes.inColumns}>
                     <CardContent className={classes.content}>
@@ -168,13 +299,7 @@ const RestaurantCard = ({ restaurant, stateCheckState }) => {
                             </div>
                         </div>
                         <div className={classes.inRows}>
-                           {/*  <StyledRating
-                                value={restaurant.price.length}
-                                icon={<AttachMoneyIcon />}
-                                max={restaurant.price.length}
-                                size="small"
-                                readOnly
-                            /> */}
+                          
                             <Typography variant="subtitle1" color="textSecondary">
                                     {restaurant.price}
                                 </Typography>
@@ -222,11 +347,4 @@ const RestaurantCard = ({ restaurant, stateCheckState }) => {
                     </CardContent>
                 </div>
             </Card>
-        </GridItem>
-  );
-};
-
-export default RestaurantCard
-
-/*         <RestaurantDetail restaurant={ restaurant } stateOpenDetail = { { openDetail, setOpenDetail } } />
- */
+        </GridItem> */
