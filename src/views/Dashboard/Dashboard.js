@@ -17,8 +17,10 @@ import DollarSign from "@material-ui/icons/AttachMoney";
 import RestaurantCard from '../../components/RestaurantCard.js'
 import RestaurantIcon from "@material-ui/icons/Restaurant";
 import LocationIcon from "@material-ui/icons/MyLocation";
+import Grid from "@material-ui/core/Grid";
 
-const apiKey =
+
+export const apiKey =
 		'bWKtDZgaFdt5Zq-srgXTP_nLbhQuHA4kNw0Y8tH0GOIB8bCJsK2KgAW0epvwAhu6YJUD9CN-VG-96IOUhD9sHm_t69ZpPR_HoLnEeXgAdv_IZ-mtX67a4ftZK8GkXXYx';
 
 const CuisineList = [
@@ -110,7 +112,7 @@ export default function Dashboard() {
             tabContent: (
               <Tasks
                 checkedIndexes={cuisineSelection}
-                tasksIndexes={[0, 1, 2, 3,4,5,6]}
+                tasksIndexes={[0, 1, 2, 3, 4, 5, 6]}
                 tasks={CuisineList}
                 onChange={handleCuisineChange}
               />
@@ -145,10 +147,12 @@ export default function Dashboard() {
       <GridItem xs={12} sm={6} md={6}>
         <Button onClick={handleRecommendationClick} className={classes.button} type="button" >Get Your Recommendations</Button>
       </GridItem>
+      <Grid container spacing={3}>
     { restaurants && restaurants.slice(0,4).map(restaurant =>
       <RestaurantCard key={ restaurant.id } restaurant={ restaurant } stateCheckState = { { checkState, checkSelection } }
       />)
     }
+    </Grid>
       {restaurants ? <Button 
          variant="contained" 
          className={classesTheme.button}
