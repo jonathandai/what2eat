@@ -1,0 +1,21 @@
+{
+    "event_id": {
+        "total_people": 6,
+        "cuisine_choices": {
+            "Pizza": 1,
+            "Chinese": 2,
+            "Mexican": 0,
+            "Thai": 1,
+            "Seafood": 0,
+            "Italian": 1,
+            "Korean": 1
+        },
+        "price_list": {
+            "$": 2,
+            "$$": 3,
+            "$$$": 1,
+            "$$$$": 0,
+            "$$$$$": 0
+        }
+    }
+}
