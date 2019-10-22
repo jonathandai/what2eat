@@ -14,6 +14,8 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import avatar from "assets/img/faces/marc.jpg";
+import Basic from './Basic'
+
 
 const styles = {
   cardCategoryWhite: {
@@ -34,10 +36,16 @@ const styles = {
   }
 };
 
+
+
 const useStyles = makeStyles(styles);
+
+
 
 export default function UserProfile() {
   const classes = useStyles();
+ 
+
   return (
     <div>
       <GridContainer>
@@ -173,6 +181,7 @@ export default function UserProfile() {
           </Card>
         </GridItem>
       </GridContainer>
+      <Basic />
     </div>
   );
 }
