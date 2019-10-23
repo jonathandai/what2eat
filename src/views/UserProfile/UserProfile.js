@@ -14,6 +14,12 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import avatar from "assets/img/faces/marc.jpg";
+import Basic from './Basic';
+import Calendar from '../UserProfile/Calendar.jsx';
+import AvailableTimes from 'react-available-times';
+import momentTimezone from 'moment-timezone';
+
+
 
 const styles = {
   cardCategoryWhite: {
@@ -34,10 +40,16 @@ const styles = {
   }
 };
 
+
+
 const useStyles = makeStyles(styles);
+
+
 
 export default function UserProfile() {
   const classes = useStyles();
+ 
+
   return (
     <div>
       <GridContainer>
@@ -173,6 +185,8 @@ export default function UserProfile() {
           </Card>
         </GridItem>
       </GridContainer>
+      <Basic />
+      <Calendar />
     </div>
   );
 }
