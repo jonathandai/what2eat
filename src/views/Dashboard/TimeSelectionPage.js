@@ -9,6 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
 
+const DAYS_IN_WEEK = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 
 const useStyles = makeStyles(theme => ({
@@ -30,6 +31,14 @@ export default function TimeSelectionPage({ restaurantHours, stateOpenTimeSelect
 
   const handleClose = () => {
     stateOpenTimeSelection.setOpenTimeSelection(false);
+  };
+
+  const getDays = () => {
+
+  };
+
+  const getHours = () => {
+
   };
 
   return (
@@ -57,7 +66,7 @@ export default function TimeSelectionPage({ restaurantHours, stateOpenTimeSelect
         maxWidth = {'md'}
       >
         <DialogContent >
-        <Calendar />
+            <Calendar availableHourRange={ {DAYS_IN_WEEK} } availableHourRange={ {start: 11, end: 23} }/>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

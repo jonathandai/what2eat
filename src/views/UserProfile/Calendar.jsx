@@ -4,8 +4,11 @@ import momentTimezone from 'moment-timezone';
 
 import AvailableTimes from 'react-available-times';
 import styles from './test.css';
+import PropTypes from 'prop-types';
 
 import './reset.css';
+
+const DAYS_IN_WEEK = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 function dateAt(dayInWeek, hours, minutes) {
   const date = new Date();
@@ -23,20 +26,7 @@ function dateAt(dayInWeek, hours, minutes) {
 const TIME_ZONE = 'America/Los_Angeles';
 
 const calendars = [
-  {
-    id: 'private',
-    title: 'My own private calendar with plenty of stuff in it',
-    backgroundColor: '#666',
-    foregroundColor: '#fff',
-    selected: true,
-  },
-  {
-    id: 'work',
-    title: 'Work',
-    backgroundColor: 'pink',
-    foregroundColor: 'black',
-    selected: true,
-  },
+
 ];
 
 const initialSelections = [
@@ -97,6 +87,7 @@ class Calendar extends Component {
   }
 
   render() {
+    const { availableDays, availableHourRange } = this.props;
     const { selections, recurring } = this.state;
 
     const fullscreen = window.location.search === '?fullscreen';
@@ -108,7 +99,7 @@ class Calendar extends Component {
               <h2>Choose Time</h2>
               {selections.length > 0 && (
                 <div>
-                  <h2>Selected ({selections.length})</h2>
+                  <h3>Selected ({selections.length})</h3>
                   <ul className={styles.selected}>
                     {selections.map(({ start, end }) => (
                       <li key={start}>
@@ -126,14 +117,14 @@ class Calendar extends Component {
               timeZone={TIME_ZONE}
               height={fullscreen ? undefined : 600}
               calendars={calendars}
-              weekStartsOn="monday"
+              weekStartsOn="sunday"
               start={new Date()}
               onChange={this.handleChange}
               initialSelections={initialSelections}
               onEventsRequested={this.handleEventsRequested}
               recurring={recurring}
-              availableDays={['monday', 'tuesday', 'wednesday', 'thursday', 'friday']}
-              availableHourRange={{ start: 6, end: 20 }}
+              availableDays={availableDays}
+              availableHourRange={availableHourRange}
             />
           </div>
         </div>
@@ -141,4 +132,19 @@ class Calendar extends Component {
     );
   }
 };
+
+
+Calendar.propTypes = {
+    availableDays: PropTypes.arrayOf(PropTypes.string),
+    availableHourRange: PropTypes.shape({
+        start: PropTypes.number,
+        end: PropTypes.number,
+      }).isRequired,
+};
+
+Calendar.defaultProps = {
+    availableDays: DAYS_IN_WEEK,
+    availableHourRange: { start: 0, end: 24 },
+};
+
 export default Calendar

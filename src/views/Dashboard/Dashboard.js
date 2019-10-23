@@ -109,7 +109,7 @@ export default function Dashboard() {
     /* if(checkState == null)
  */
     axios.get(
-      `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/${checkState[0]}`,
+      `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/the-house-san-francisco`,
       {
         headers: {
           Authorization: `Bearer ${apiKey}`

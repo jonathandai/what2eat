@@ -96,6 +96,7 @@ const RestaurantDetail = ({ restaurantDetails, restaurantReviews, stateOpenDetai
         className={classesTheme.modal}
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
+        
       >
          <GridList className={classesTheme.gridList}>
           <GridListTile key="Header" cols={2} style={{ height: 'auto' }}>
