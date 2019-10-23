@@ -14,7 +14,11 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import avatar from "assets/img/faces/marc.jpg";
-import Basic from './Basic'
+import Basic from './Basic';
+import Calendar from '../UserProfile/Calendar.jsx';
+import AvailableTimes from 'react-available-times';
+import momentTimezone from 'moment-timezone';
+
 
 
 const styles = {
@@ -182,6 +186,7 @@ export default function UserProfile() {
         </GridItem>
       </GridContainer>
       <Basic />
+      <Calendar />
     </div>
   );
 }

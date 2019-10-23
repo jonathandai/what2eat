@@ -19,6 +19,8 @@ import RestaurantIcon from "@material-ui/icons/Restaurant";
 import LocationIcon from "@material-ui/icons/MyLocation";
 import Grid from "@material-ui/core/Grid";
 
+import TimeSelectionPage from "./TimeSelectionPage";
+
 
 export const apiKey =
 		'bWKtDZgaFdt5Zq-srgXTP_nLbhQuHA4kNw0Y8tH0GOIB8bCJsK2KgAW0epvwAhu6YJUD9CN-VG-96IOUhD9sHm_t69ZpPR_HoLnEeXgAdv_IZ-mtX67a4ftZK8GkXXYx';
@@ -98,10 +100,39 @@ export default function Dashboard() {
   const [checkState, checkSelection] = useCheckSelection([]);
   const classesTheme = useStylesTheme();
 
+  const [restaurantHours, setRestaurantHours] = useState();
+  const [openTimeSelection, setOpenTimeSelection] = useState(false);
+
+
+
+  const handleOpen = () => {
+    /* if(checkState == null)
+ */
+    axios.get(
+      `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/${checkState[0]}`,
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`
+        }
+      }
+    )
+    .then((res) => {
+      console.log("response",res.data.hours);
+      setRestaurantHours(res.data.hours);
+    })
+    .catch((err) => {
+      console.log('Error',err);
+    });
+    setOpenTimeSelection(true);
+  };
+
+
+
 	return (
     <div>
-		 <GridContainer>
-     <GridItem xs={12} sm={12} md={12}>
+      <TimeSelectionPage restaurantHours={ restaurantHours } stateOpenTimeSelection={ { openTimeSelection, setOpenTimeSelection } } />
+		  <GridContainer>
+      <GridItem xs={12} sm={12} md={12}>
         <CustomTabs
         title="Creating New Event"
         headerColor="primary"
@@ -158,7 +189,7 @@ export default function Dashboard() {
          className={classesTheme.button}
          color= "secondary"
          style={{maxWidth: '180px', maxHeight: '70px', minWidth: '180px', minHeight: '70px', fontSize: '20px'}}
-         onClick={ ()=>alert('success!') }
+         onClick={handleOpen}
         >
           Submit
         </Button>: null   } 
