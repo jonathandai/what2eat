@@ -20,6 +20,7 @@ import LocationIcon from "@material-ui/icons/MyLocation";
 import Grid from "@material-ui/core/Grid";
 
 import TimeSelectionPage from "./TimeSelectionPage";
+import ConfirmedEventCard from "./ConfirmedEventPage";
 
 
 export const apiKey =
@@ -103,13 +104,15 @@ export default function Dashboard() {
   const [restaurantHours, setRestaurantHours] = useState();
   const [openTimeSelection, setOpenTimeSelection] = useState(false);
 
-
+  const [confirmedRestaurant, setConfirmedRestaurant] = useState();
+  const [confirmedTime, setConfirmedTime] = useState();
+  const [showConfirmPage, setShowConfirmPage] = useState(false); //listen from firebase to determine
 
   const handleOpen = () => {
     /* if(checkState == null)
  */
     axios.get(
-      `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/the-house-san-francisco`,
+      `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/${checkState[0]}`,
       {
         headers: {
           Authorization: `Bearer ${apiKey}`
@@ -124,14 +127,22 @@ export default function Dashboard() {
       console.log('Error',err);
     });
     setOpenTimeSelection(true);
+    //console.log(openTimeSelection);
+    setConfirmedRestaurant(restaurants.find(r => r.id === checkState[0]));
+    //console.log(confirmedRestaurant);
   };
 
 
 
 	return (
     <div>
-      <TimeSelectionPage restaurantHours={ restaurantHours } stateOpenTimeSelection={ { openTimeSelection, setOpenTimeSelection } } />
-		  <GridContainer>
+      <TimeSelectionPage 
+        restaurantHours={ restaurantHours } 
+        stateOpenTimeSelection={ { openTimeSelection, setOpenTimeSelection } } 
+        setConfirmedTime={ setConfirmedTime }
+        setShowConfirmPage={ setShowConfirmPage }
+      />
+		  { !showConfirmPage && <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
         <CustomTabs
         title="Creating New Event"
@@ -179,11 +190,11 @@ export default function Dashboard() {
         <Button onClick={handleRecommendationClick} className={classes.button} type="button" >Get Your Recommendations</Button>
       </GridItem>
       <Grid container spacing={3}>
-    { restaurants && restaurants.slice(0,4).map(restaurant =>
-      <RestaurantCard key={ restaurant.id } restaurant={ restaurant } stateCheckState = { { checkState, checkSelection } }
-      />)
-    }
-    </Grid>
+      { restaurants && restaurants.slice(0,4).map(restaurant =>
+        <RestaurantCard key={ restaurant.id } restaurant={ restaurant } stateCheckState = { { checkState, checkSelection } }
+        />)
+      }
+      </Grid>
       {restaurants ? <Button 
          variant="contained" 
          className={classesTheme.button}
@@ -193,7 +204,12 @@ export default function Dashboard() {
         >
           Submit
         </Button>: null   } 
-		 </GridContainer>
+     </GridContainer>}
+     
+     {showConfirmPage ? <ConfirmedEventCard 
+        confirmedRestaurant={ confirmedRestaurant }
+        confirmedTime={ confirmedTime }
+      /> : null}
      </div>
 	);
 }
