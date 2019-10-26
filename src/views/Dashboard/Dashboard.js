@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EventDetail from './EventDetail'
 import Button from "components/CustomButtons/Button.js";
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import firebase from 'firebase/app';
 import 'firebase/database';
+import FindEventTextField from 'components/TextField/FindEventTextField';
+
 
 export const apiKey =
     'bWKtDZgaFdt5Zq-srgXTP_nLbhQuHA4kNw0Y8tH0GOIB8bCJsK2KgAW0epvwAhu6YJUD9CN-VG-96IOUhD9sHm_t69ZpPR_HoLnEeXgAdv_IZ-mtX67a4ftZK8GkXXYx';
@@ -25,6 +27,8 @@ const db = firebase.database();
 
 export default function Dashboard() {
   const [hasId, setHasId] = useState(localStorage.getItem('renderSurvey'));
+  const [currentEvent, setCurrentEvent] = useState({})
+  const [eventID, setEventID] = useState({})
 
   const handleCreatingEvent = () => {
     //creating new events in firebase
@@ -60,8 +64,29 @@ export default function Dashboard() {
     setHasId(false);
   }
 
+  const handleFindEvent = (eventid) => {
+    if (Object.keys(eventid).length == 0) {
+      alert("Please type in a valid event ID")
+    } else {
+      console.log(eventID['eventID'])
+      db.ref('events/'+eventID['eventID']).on('value', snap => {
+        if (snap.val()) {
+          console.log(snap.val())
+          setCurrentEvent(snap.val())
+        }
+        else alert("Event "+eventID['eventID']+ " does not exist")
+      })
+    }
+  }
+
   if (!hasId) {
-    return <Button color='rose' onClick={handleCreatingEvent}>Create New Event</Button>
+    return (
+      <div>
+      <Button color='rose' onClick={handleCreatingEvent}>Create New Event</Button>
+      <FindEventTextField eventID={eventID} setEventID={setEventID}></FindEventTextField>
+      <Button color='primary' onClick={() => handleFindEvent(eventID)}>Find Event</Button>
+      </div>
+    )
   } else {
     return (
       <div>
