@@ -63,7 +63,7 @@ class DashboardContainer extends Component {
 
     renderRestaurantInfo () {
         
-        const RestaruantList = this.state.restaurants.map((restaurants) => {
+        const RestaurantList = this.state.restaurants.map((restaurants) => {
             
             return (    
                 <div 
@@ -110,7 +110,7 @@ class DashboardContainer extends Component {
         });
 
         return(
-            <div className="RestuarantList__gallery">{RestaruantList}</div>
+            <div className="RestuarantList__gallery">{RestaurantList}</div>
         )
     }
 
