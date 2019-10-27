@@ -21,6 +21,9 @@ import Grid from "@material-ui/core/Grid";
 
 import TimeSelectionPage from "./TimeSelectionPage";
 import {apiKey} from './Dashboard'
+import app from './db'
+
+const db = app.database();
 
 const CuisineList = [
   "Pizza","Chinese","Mexican","Burgers", "Thai", "Seafood", "Italian", "Steakhouse", "Korean", "Japanese",
@@ -52,14 +55,38 @@ export default function EventDetail({id}) {
     }
   const useStyles = makeStyles(styles);
   const classes = useStyles();
-
+  
   const handleRecommendationClick = () => {
     const cuisines = cuisineSelection.map(i=>CuisineList[i]);
-    const categories = cuisines.map(cuisine=>cuisine.toLowerCase()).join();
+    const categories = cuisines.map(cuisine=>cuisine).join();
     console.log('categories', categories)
-    
+
+    console.log(id)
+    var ref = db.ref('events/' + id)
+    ref.on("value", function(snapshot) { // in case we want to weight the more voted choices later
+      const dbCuisineCount = snapshot.val().cuisine
+      const dbPriceCount = snapshot.val().price
+      console.log(snapshot.val().cuisine);
+    }, function (errorObject) {
+      console.log("The read failed: " + errorObject.code);
+    });
+
+    cuisines.map(c => {
+      db.ref('events/' + id).child('cuisine').child(c).set(1)
+    })
+
     const prices = priceSelection.map(i=>PriceList[i]);
     const dollarsigns = prices.map(str=>str.length).join();
+
+    console.log(prices)
+    // dollarsigns.map(c => {
+    //   db.ref('events/' + id).child('price').child(c).set(1)
+    // })
+
+    prices.map(i => { 
+      db.ref('events/' + id).child('price').child(i.length.toString()).set(1)
+    })
+
     console.log('dollarsigns', dollarsigns)
     axios.get(
       `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/search?location=${location.toLowerCase()}`,
@@ -127,6 +154,7 @@ export default function EventDetail({id}) {
 
 	return (
     <div>
+       {/* <Button onClick={updateEventCuisineList} className={classes.button} type="button" >Refresh</Button> */}
       <TimeSelectionPage restaurantHours={ restaurantHours } stateOpenTimeSelection={ { openTimeSelection, setOpenTimeSelection } } />
 		  <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
