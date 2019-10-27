@@ -75,7 +75,7 @@ export default function ConfirmedEventCard({ confirmedRestaurant, confirmedTime 
                 {  "Time: ".concat(confirmedTime[0]) }
             </Typography>
             <Typography variant="subtitle1" component="p">
-                {  "Address: ".concat(confirmedRestaurant.location.address1) }
+                {  "Address: ".concat(confirmedRestaurant.location.address1).concat(", ").concat(confirmedRestaurant.location.city).concat(", ").concat(confirmedRestaurant.location.state) }
             </Typography>
         </CardContent>
         <CardActions >  
