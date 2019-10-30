@@ -26,11 +26,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function TimeSelectionPage({ restaurantHours, stateOpenTimeSelection }) {
+export default function TimeSelectionPage({ restaurantHours, stateOpenTimeSelection, setConfirmedTime, setShowConfirmPage }) {
   const classes = useStyles();
 
   const handleClose = () => {
     stateOpenTimeSelection.setOpenTimeSelection(false);
+    setShowConfirmPage(true);
   };
 
   const getDays = () => {
@@ -42,22 +43,6 @@ export default function TimeSelectionPage({ restaurantHours, stateOpenTimeSelect
   };
 
   return (
-   /*  <div>
-      <Modal
-        className={classes.modal}
-        open={stateOpenTimeSelection.openTimeSelection}
-        onClose={handleClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={stateOpenTimeSelection.openTimeSelection}>
-        <Calendar />
-        </Fade>
-      </Modal>
-    </div> */
     <Dialog
         open={stateOpenTimeSelection.openTimeSelection}
         onClose={handleClose}
@@ -66,7 +51,7 @@ export default function TimeSelectionPage({ restaurantHours, stateOpenTimeSelect
         maxWidth = {'md'}
       >
         <DialogContent >
-            <Calendar availableHourRange={ {DAYS_IN_WEEK} } availableHourRange={ {start: 11, end: 23} }/>
+            <Calendar availableHourRange={ {DAYS_IN_WEEK} } availableHourRange={ {start: 11, end: 23} } setConfirmedTime={ setConfirmedTime }/>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

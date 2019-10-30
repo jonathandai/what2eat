@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 
 import './reset.css';
 
+const regexStart = /(.*):00 GMT/;
+const regexEnd = /([^ ]*):00 GMT/;
 const DAYS_IN_WEEK = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 function dateAt(dayInWeek, hours, minutes) {
@@ -42,10 +44,17 @@ class Calendar extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleEventsRequested = this.handleEventsRequested.bind(this);
+    this.parseTime = this.parseTime.bind(this);
   }
 
   handleChange(selections) {
+    console.log({ selections });
     this.setState({ selections });
+    this.props.setConfirmedTime(selections.map(({start, end}) => this.parseTime(start, end)) ) 
+  }
+
+  parseTime(start, end) {
+    return ((regexStart.exec(start.toString())[1]).concat(" - ")).concat(regexEnd.exec(end.toString())[1]);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -87,7 +96,7 @@ class Calendar extends Component {
   }
 
   render() {
-    const { availableDays, availableHourRange } = this.props;
+    const { availableDays, availableHourRange, setConfirmedTime } = this.props;
     const { selections, recurring } = this.state;
 
     const fullscreen = window.location.search === '?fullscreen';
@@ -103,7 +112,7 @@ class Calendar extends Component {
                   <ul className={styles.selected}>
                     {selections.map(({ start, end }) => (
                       <li key={start}>
-                        {start.toString()} - {end.toString()}
+                        { this.parseTime(start, end) }
                       </li>
                     ))}
                   </ul>
@@ -140,6 +149,7 @@ Calendar.propTypes = {
         start: PropTypes.number,
         end: PropTypes.number,
       }).isRequired,
+    setConfirmedTime: PropTypes.func,
 };
 
 Calendar.defaultProps = {

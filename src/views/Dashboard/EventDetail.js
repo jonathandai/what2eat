@@ -20,6 +20,8 @@ import LocationIcon from "@material-ui/icons/MyLocation";
 import Grid from "@material-ui/core/Grid";
 
 import TimeSelectionPage from "./TimeSelectionPage";
+import ConfirmedEventCard from "./ConfirmedEventPage";
+
 import {apiKey} from './Dashboard'
 import app from './db'
 
@@ -127,6 +129,10 @@ export default function EventDetail({id}) {
   const [restaurantHours, setRestaurantHours] = useState();
   const [openTimeSelection, setOpenTimeSelection] = useState(false);
 
+  const [confirmedRestaurant, setConfirmedRestaurant] = useState();
+  const [confirmedTime, setConfirmedTime] = useState();
+  const [showConfirmPage, setShowConfirmPage] = useState(false); //listen from firebase to determine
+
 
 
   const handleOpen = () => {
@@ -148,6 +154,8 @@ export default function EventDetail({id}) {
       console.log('Error',err);
     });
     setOpenTimeSelection(true);
+    setConfirmedRestaurant(restaurants.find(r => r.id === checkState[0]));
+
   };
 
   const title = "Event Id: " + id;
@@ -155,8 +163,13 @@ export default function EventDetail({id}) {
 	return (
     <div>
        {/* <Button onClick={updateEventCuisineList} className={classes.button} type="button" >Refresh</Button> */}
-      <TimeSelectionPage restaurantHours={ restaurantHours } stateOpenTimeSelection={ { openTimeSelection, setOpenTimeSelection } } />
-		  <GridContainer>
+       <TimeSelectionPage 
+        restaurantHours={ restaurantHours } 
+        stateOpenTimeSelection={ { openTimeSelection, setOpenTimeSelection } } 
+        setConfirmedTime={ setConfirmedTime }
+        setShowConfirmPage={ setShowConfirmPage }
+      />		  
+      { !showConfirmPage && <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
         <CustomTabs
         title={title}
@@ -218,7 +231,12 @@ export default function EventDetail({id}) {
         >
           Submit
         </Button>: null   } 
-		 </GridContainer>
+		 </GridContainer>}
+
+      {showConfirmPage ? <ConfirmedEventCard 
+        confirmedRestaurant={ confirmedRestaurant }
+        confirmedTime={ confirmedTime }
+      /> : null}
      </div>
 	);
 }
