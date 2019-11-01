@@ -29,7 +29,7 @@ export default function FindEventTextField({eventID, setEventID}) {
   });
 
   const handleChange = name => event => {
-    setEventID({[name]: event.target.value})
+    setEventID(event.target.value)
     setValues({ ...values, [name]: event.target.value });
   };
 

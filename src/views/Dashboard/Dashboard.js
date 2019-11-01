@@ -14,9 +14,9 @@ export const apiKey =
 const db = app.database();
 
 export default function Dashboard() {
-  const [hasId, setHasId] = useState(localStorage.getItem('renderSurvey'));
-  const [currentEvent, setCurrentEvent] = useState({})
-  const [eventID, setEventID] = useState({})
+  // const [hasId, setHasId] = useState(localStorage.getItem('renderSurvey'));
+  const [hasId, setHasId] = useState(false);
+  const [eventID, setEventID] = useState();
 
   const handleCreatingEvent = () => {
     //creating new events in firebase
@@ -56,15 +56,10 @@ export default function Dashboard() {
     if (Object.keys(eventid).length == 0) {
       alert("Please type in a valid event ID")
     } else {
-      console.log(eventID['eventID'])
-      db.ref('events/'+eventID['eventID']).on('value', snap => {
-        if (snap.val()) {
-          console.log(snap.val())
-          setCurrentEvent(snap.val())
-        }
-        else alert("Event "+eventID['eventID']+ " does not exist")
-      })
+      setHasId(true);
+      setEventID(eventid);
     }
+      
   }
 
   if (!hasId) {
@@ -79,7 +74,7 @@ export default function Dashboard() {
     return (
       <div>
         <IconButton onClick={handleBackClick}><ArrowBackIcon/></IconButton>
-        <EventDetail id="6wdplgbj0"/> 
+        <EventDetail id={eventID}/> 
       </div>)
   }
 
