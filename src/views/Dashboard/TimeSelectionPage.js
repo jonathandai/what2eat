@@ -30,14 +30,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function TimeSelectionPage({ restaurantHours, stateOpenTimeSelection, stateConfirmedTime, setShowConfirmPage }) {
+export default function TimeSelectionPage({ restaurantHours, stateOpenTimeSelection, stateConfirmedTime, setShowConfirmPage, id }) {
   const classes = useStyles();
 
   const handleClose = () => {
     stateOpenTimeSelection.setOpenTimeSelection(false);
     setShowConfirmPage(true);
-
-    db.ref('events/' + id).child('confirmedTime').set(stateConfirmedTime.confirmedTime);
+    db.ref('events/' + id).child('showConfirmPage').set(true)
+    //db.ref('events/' + id).child('confirmedTime').set(stateConfirmedTime.confirmedTime);
   };
 
   const getDays = () => {
@@ -57,7 +57,7 @@ export default function TimeSelectionPage({ restaurantHours, stateOpenTimeSelect
         maxWidth = {'md'}
       >
         <DialogContent >
-            <Calendar availableHourRange={ {DAYS_IN_WEEK} } availableHourRange={ {start: 11, end: 23} } setConfirmedTime={ stateConfirmedTime.setConfirmedTime }/>
+            <Calendar availableHourRange={ {DAYS_IN_WEEK} } availableHourRange={ {start: 11, end: 23} } setConfirmedTime={ stateConfirmedTime.setConfirmedTime } id = { id }/>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

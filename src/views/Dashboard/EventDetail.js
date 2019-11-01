@@ -49,6 +49,30 @@ export default function EventDetail({id}) {
   const [location, setLocation] = useState("");
   const [priceSelection, setPriceSelection] = useState([]);
 
+  const useCheckSelection = () => {
+    const [checkState, setCheckList] = useState([]);
+    const checkSelection = (id) => {
+      if(checkState.includes(id))
+        setCheckList(checkState.filter(i => i !== id));
+      else
+        setCheckList([id].concat(checkState.filter(i => false)));
+     //setCheckList(checkState.includes(id) ? checkState.filter(i => i !== id) : [id].concat(checkState))
+    };
+    return [ checkState, checkSelection ];
+  };
+
+  const [checkState, checkSelection] = useCheckSelection([]);
+  const classesTheme = useStylesTheme();
+
+  const [restaurantHours, setRestaurantHours] = useState();
+  const [openTimeSelection, setOpenTimeSelection] = useState(false);
+
+  const [confirmedRestaurant, setConfirmedRestaurant] = useState();
+  const [confirmedTime, setConfirmedTime] = useState();
+  const [showConfirmPage, setShowConfirmPage] = useState(false); //listen from firebase to determine
+
+
+
   useEffect(()=> {
     // read from firebase
   db.ref('events/'+ id).on('value', snap => {
@@ -73,6 +97,10 @@ export default function EventDetail({id}) {
         }
       }
       setPriceSelection(initialPriceSelection)
+
+      setConfirmedRestaurant(event.confirmedRestaurant)
+      setConfirmedTime(event.confirmedTime)
+      setShowConfirmPage(event.showConfirmPage)
     }
     else alert("Event "+ id + " does not exist")
   });
@@ -139,29 +167,8 @@ export default function EventDetail({id}) {
     });
   }
 
-  const useCheckSelection = () => {
-    const [checkState, setCheckList] = useState([]);
-    const checkSelection = (id) => {
-      if(checkState.includes(id))
-        setCheckList(checkState.filter(i => i !== id));
-      else
-        setCheckList([id].concat(checkState.filter(i => false)));
-     //setCheckList(checkState.includes(id) ? checkState.filter(i => i !== id) : [id].concat(checkState))
-    };
-    return [ checkState, checkSelection ];
-  };
 
-  const [checkState, checkSelection] = useCheckSelection([]);
-  const classesTheme = useStylesTheme();
-
-  const [restaurantHours, setRestaurantHours] = useState();
-  const [openTimeSelection, setOpenTimeSelection] = useState(false);
-
-  const [confirmedRestaurant, setConfirmedRestaurant] = useState();
-  const [confirmedTime, setConfirmedTime] = useState();
-  const [showConfirmPage, setShowConfirmPage] = useState(false); //listen from firebase to determine
-
-
+ 
 
   const handleOpen = () => {
     /* if(checkState == null)
@@ -182,9 +189,9 @@ export default function EventDetail({id}) {
       console.log('Error',err);
     });
     setOpenTimeSelection(true);
-    setConfirmedRestaurant(restaurants.find(r => r.id === checkState[0]));
-    db.ref('events/' + id).child('confirmedRestaurant').set(confirmedRestaurant);
-
+    //setConfirmedRestaurant(restaurants.find(r => r.id === checkState[0]));
+    db.ref('events/' + id).child('confirmedRestaurant').set(restaurants.find(r => r.id === checkState[0]));
+    
   };
 
   const title = "Event Id: " + id;
@@ -196,6 +203,7 @@ export default function EventDetail({id}) {
         stateOpenTimeSelection={ { openTimeSelection, setOpenTimeSelection } } 
         stateConfirmedTime={ { confirmedTime, setConfirmedTime } }
         setShowConfirmPage={ setShowConfirmPage }
+        id = { id }
       />		  
       { !showConfirmPage && <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
