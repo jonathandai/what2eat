@@ -44,6 +44,12 @@ export default function Dashboard() {
       4: 0,
     })
 
+    db.ref('events/' + id).child('confirmedRestaurant').set(null)
+
+    db.ref('events/' + id).child('confirmedTime').set(null)
+
+    db.ref('events/' + id).child('showConfirmPage').set(false)
+
     localStorage.setItem('renderSurvey', true)
     setHasId(true);
   }

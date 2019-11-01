@@ -5,8 +5,13 @@ import momentTimezone from 'moment-timezone';
 import AvailableTimes from 'react-available-times';
 import styles from './test.css';
 import PropTypes from 'prop-types';
-
 import './reset.css';
+
+import app from '../Dashboard/db'
+
+const db = app.database();
+
+
 
 const regexStart = /(.*):00 GMT/;
 const regexEnd = /([^ ]*):00 GMT/;
@@ -50,7 +55,8 @@ class Calendar extends Component {
   handleChange(selections) {
     console.log({ selections });
     this.setState({ selections });
-    this.props.setConfirmedTime(selections.map(({start, end}) => this.parseTime(start, end)) ) 
+    db.ref('events/' + this.props.id).child('confirmedTime').set(selections.map(({start, end}) => this.parseTime(start, end)))
+    //this.props.setConfirmedTime(selections.map(({start, end}) => this.parseTime(start, end)) ) 
   }
 
   parseTime(start, end) {
@@ -96,7 +102,7 @@ class Calendar extends Component {
   }
 
   render() {
-    const { availableDays, availableHourRange, setConfirmedTime } = this.props;
+    const { availableDays, availableHourRange, setConfirmedTime, id } = this.props;
     const { selections, recurring } = this.state;
 
     const fullscreen = window.location.search === '?fullscreen';
@@ -150,6 +156,7 @@ Calendar.propTypes = {
         end: PropTypes.number,
       }).isRequired,
     setConfirmedTime: PropTypes.func,
+    id: PropTypes.string
 };
 
 Calendar.defaultProps = {
