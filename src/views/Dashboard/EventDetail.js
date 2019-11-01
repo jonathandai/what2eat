@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // react plugin for creating charts
 // @material-ui/core
 import { makeStyles} from '@material-ui/core/styles';
@@ -42,28 +42,56 @@ const useStylesTheme = makeStyles((theme) => ({
 }));
 
 export default function EventDetail({id}) {
-    const [ restaurants, setRestaurants ] = useState();
-    
-    const [cuisineSelection, setCuisineSelection] = useState([]);
-    const [location, setLocation] = useState("");
-    const [priceSelection, setPriceSelection] = useState([]);
+  
+  const [ restaurants, setRestaurants ] = useState();
+  
+  const [cuisineSelection, setCuisineSelection] = useState([]);
+  const [location, setLocation] = useState("");
+  const [priceSelection, setPriceSelection] = useState([]);
 
-    const handleCuisineChange = (newCuisinesIndex) => {
-      setCuisineSelection(newCuisinesIndex);
-    }
+  useEffect(()=> {
+    // read from firebase
+  db.ref('events/'+ id).on('value', snap => {
+    if (snap.val()) {
+      const event = snap.val();
+      console.log('event',event);
+      setLocation(event.location);
+      const firebaseCuisineSelection = event.cuisine;
+      const initialCuisineSelection = [];
+      for (var i = 0; i < CuisineList.length; i++) {
+        if(firebaseCuisineSelection[CuisineList[i]] > 0) {
+          initialCuisineSelection.push(i);
+        }
+      }
+      setCuisineSelection(initialCuisineSelection)
 
-    const handlePriceRangeChange = (newPriceRangeIndex) => {
-      setPriceSelection(newPriceRangeIndex)
+      const firebasePriceSelection = event.price;
+      const initialPriceSelection = [];
+      for (var i = 0; i < PriceList.length; i++) {
+        if (firebasePriceSelection[i + 1] > 0) {
+          initialPriceSelection.push(i);
+        }
+      }
+      setPriceSelection(initialPriceSelection)
     }
+    else alert("Event "+ id + " does not exist")
+  });
+},[id])
+
+  const handleCuisineChange = (newCuisinesIndex) => {
+    setCuisineSelection(newCuisinesIndex);
+  }
+
+  const handlePriceRangeChange = (newPriceRangeIndex) => {
+    setPriceSelection(newPriceRangeIndex)
+  }
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   
   const handleRecommendationClick = () => {
     const cuisines = cuisineSelection.map(i=>CuisineList[i]);
     const categories = cuisines.map(cuisine=>cuisine).join();
-    console.log('categories', categories)
 
-    console.log(id)
     var ref = db.ref('events/' + id)
     ref.on("value", function(snapshot) { // in case we want to weight the more voted choices later
       const dbCuisineCount = snapshot.val().cuisine
@@ -89,7 +117,7 @@ export default function EventDetail({id}) {
       db.ref('events/' + id).child('price').child(i.length.toString()).set(1)
     })
 
-    console.log('dollarsigns', dollarsigns)
+    db.ref('events/' + id).child('location').set(location.toLowerCase())
     axios.get(
       `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/search?location=${location.toLowerCase()}`,
       {
@@ -160,10 +188,9 @@ export default function EventDetail({id}) {
   };
 
   const title = "Event Id: " + id;
-
+  console.log('cuisineSelection', cuisineSelection)
 	return (
     <div>
-       {/* <Button onClick={updateEventCuisineList} className={classes.button} type="button" >Refresh</Button> */}
        <TimeSelectionPage 
         restaurantHours={ restaurantHours } 
         stateOpenTimeSelection={ { openTimeSelection, setOpenTimeSelection } } 
@@ -218,7 +245,7 @@ export default function EventDetail({id}) {
         <Button onClick={handleRecommendationClick} className={classes.button} type="button" >Get Your Recommendations</Button>
       </GridItem>
       <Grid container spacing={3}>
-    { restaurants && restaurants.slice(0,4).map(restaurant =>
+    { restaurants && restaurants.slice(0,6).map(restaurant =>
       <RestaurantCard key={ restaurant.id } restaurant={ restaurant } stateCheckState = { { checkState, checkSelection } }
       />)
     }
@@ -230,7 +257,7 @@ export default function EventDetail({id}) {
          style={{maxWidth: '180px', maxHeight: '70px', minWidth: '180px', minHeight: '70px', fontSize: '20px'}}
          onClick={handleOpen}
         >
-          Submit
+          Confrim
         </Button>: null   } 
 		 </GridContainer>}
 
