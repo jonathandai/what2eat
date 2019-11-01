@@ -155,6 +155,7 @@ export default function EventDetail({id}) {
     });
     setOpenTimeSelection(true);
     setConfirmedRestaurant(restaurants.find(r => r.id === checkState[0]));
+    db.ref('events/' + id).child('confirmedRestaurant').set(confirmedRestaurant);
 
   };
 
@@ -166,7 +167,7 @@ export default function EventDetail({id}) {
        <TimeSelectionPage 
         restaurantHours={ restaurantHours } 
         stateOpenTimeSelection={ { openTimeSelection, setOpenTimeSelection } } 
-        setConfirmedTime={ setConfirmedTime }
+        stateConfirmedTime={ { confirmedTime, setConfirmedTime } }
         setShowConfirmPage={ setShowConfirmPage }
       />		  
       { !showConfirmPage && <GridContainer>

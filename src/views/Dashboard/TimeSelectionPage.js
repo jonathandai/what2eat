@@ -9,6 +9,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
 
+import app from './db'
+
+const db = app.database();
+
 const DAYS_IN_WEEK = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 
@@ -26,12 +30,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function TimeSelectionPage({ restaurantHours, stateOpenTimeSelection, setConfirmedTime, setShowConfirmPage }) {
+export default function TimeSelectionPage({ restaurantHours, stateOpenTimeSelection, stateConfirmedTime, setShowConfirmPage }) {
   const classes = useStyles();
 
   const handleClose = () => {
     stateOpenTimeSelection.setOpenTimeSelection(false);
     setShowConfirmPage(true);
+
+    db.ref('events/' + id).child('confirmedTime').set(stateConfirmedTime.confirmedTime);
   };
 
   const getDays = () => {
@@ -51,7 +57,7 @@ export default function TimeSelectionPage({ restaurantHours, stateOpenTimeSelect
         maxWidth = {'md'}
       >
         <DialogContent >
-            <Calendar availableHourRange={ {DAYS_IN_WEEK} } availableHourRange={ {start: 11, end: 23} } setConfirmedTime={ setConfirmedTime }/>
+            <Calendar availableHourRange={ {DAYS_IN_WEEK} } availableHourRange={ {start: 11, end: 23} } setConfirmedTime={ stateConfirmedTime.setConfirmedTime }/>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
