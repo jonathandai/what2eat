@@ -22,6 +22,7 @@ export default function Dashboard() {
     //creating new events in firebase
     const id = Math.random().toString(36).substr(2, 9)
     alert('Success! Your Event Id is, ' + id)
+    setEventID(id);
 
     db.ref('events/' + id).set({
       location: "",
