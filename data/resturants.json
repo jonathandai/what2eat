@@ -1,6 +1,11 @@
 {
-    "1": {
-        "name":"",
-        "open_time":""
+    "eventID": {
+        "cuisine": {
+            "chinese": 0,
+            "mexican": 0
+        },
+        "price": {
+            
+        }
     }
 }
